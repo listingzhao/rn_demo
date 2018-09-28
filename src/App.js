@@ -22,7 +22,8 @@ import PullScrollView from './views/PullScrollView'
 import PullScrollScreen from './views/ScrollView'
 import PullFlatList from './views/PullFlatList'
 import FlatScreen from './views/FlatList'
-import Fetch from './lib/Fetch';
+import Fetch from './lib/Fetch'
+import routes from './routes'
 
 var MOCKED_MOVIES_DATA = [
   {
@@ -218,11 +219,18 @@ class HomeScreen extends Component {
             this.promiseComm('promise发送啦')
           }}
         />
-        <TouchableOpacity onPress={ }>
+        <TouchableOpacity onPress={() => {
+          navigate('yxhome')
+        } }>
           <Text>跳转到Demo</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={this.onPressButton }>
           <Text>跳转到原生页面</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => {
+          navigate('helpcenter')
+        }}>
+          <Text>帮助中心</Text>
         </TouchableOpacity>
       </View>
     );
@@ -251,6 +259,7 @@ const RootStack = createStackNavigator(
 );
 
 const routeConfig = {
+  ...routes,
   Initial: InitialScreen,
   Home: HomeScreen,
   Details: DetailsScreen,
