@@ -22,6 +22,7 @@ import {
 } from 'react-navigation';
 import Fetch from '../../lib/Fetch'
 import {scaleSize,scaleHeight,setSpText} from '../../utils/ScreenUtils'
+import {baseUrl} from '../../api/baseUrl'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
 const myIcon = (<Icon name="arrow-right" size={24} color="#e8e8e8" />)
 
@@ -30,7 +31,7 @@ class Cell extends Component {
   render () {
     return (
       <View style={styles.container}>
-        <Text style={{fontSize: setSpText(18)}}>{this.props.data.title}</Text>
+        <Text style={{fontSize: setSpText(18)}}>{this.props.data.value}</Text>
         <Text note style={{marginLeft:scaleSize(15),color: this.props.textColor}}>{myIcon}</Text> 
       </View>
     )
@@ -65,19 +66,25 @@ export default class extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      dataList: [{id: 1, title: '账户相关'},{id: 2, title: '充值相关'},{id: 3, title: '产品购买'}]
+      dataList: []
     }
   }
 
   componentDidMount() {
-    // Fetch.POST("",{}).then(res=> {
-
-    // })
+    console.log(baseUrl)
+    Fetch.POST(baseUrl+"/app/help").then(res => {
+      console.log(res)
+      if(res.code === 1) {
+        this.setState({
+          dataList: res.data
+        })
+      }
+    })
   }
 
   _renderList = () => {
     const { navigate } = this.props.navigation
-    const listItems = this.state.dataList.map((item, index) => <TouchableOpacity activeOpacity={0.5} onPress={() => {navigate('helpdetail', {itemId: item.id,title: item.title})}}><Cell key={index} data={item}></Cell></TouchableOpacity>)
+    const listItems = this.state.dataList.map((item, index) => <TouchableOpacity key={index} activeOpacity={0.5} onPress={() => {navigate('helpdetail', {itemId: item.code,title: item.value})}}><Cell key={index} data={item}></Cell></TouchableOpacity>)
     return (
       <View style={{borderTopWidth: 1, borderColor: '#e8e8e8'}}>
         {listItems}
@@ -97,18 +104,20 @@ export default class extends Component {
 
   render() {
     return (
-      <View style={{flex: 1, backgroundColor: '#f5f5f5', paddingTop: scaleHeight(16)}}>
-        <View>
-          <Text style={{paddingLeft: 16, paddingBottom: 16, color: '#333333', fontSize: setSpText(16)}}>常见问题</Text>
+      <ScrollView>
+        <View style={{flex: 1, backgroundColor: '#f5f5f5', paddingTop: scaleHeight(16)}}>
+          <View>
+            <Text style={{paddingLeft: 16, paddingBottom: 16, color: '#333333', fontSize: setSpText(16)}}>常见问题</Text>
+          </View>
+          {this._renderList()}
+          <View style={{marginTop: 40,alignItems: 'center', marginBottom: 40}}>
+            <TouchableOpacity activeOpacity={0.5} onPress={() => this.linking('tel:4008-690-611') }>
+              <Text style={{fontSize: setSpText(18),fontWeight: 'bold'}}>4008-690-611</Text>
+            </TouchableOpacity>
+            <Text>工作时间：09：00-18：00</Text>
+          </View>
         </View>
-        {this._renderList()}
-        <View style={{marginTop: 40,alignItems: 'center',}}>
-          <TouchableOpacity activeOpacity={0.5} onPress={() => this.linking('tel:4008-690-611') }>
-            <Text style={{fontSize: setSpText(18),fontWeight: 'bold'}}>4008-690-611</Text>
-          </TouchableOpacity>
-          <Text>工作时间：09：00-18：00</Text>
-        </View>
-      </View>
+      </ScrollView>
     )
   }
 } 

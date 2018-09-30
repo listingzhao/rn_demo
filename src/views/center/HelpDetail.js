@@ -2,7 +2,7 @@
  * @Author: listing.zhaopeng 
  * @Date: 2018-09-27 14:42:21 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2018-09-27 17:29:14
+ * @Last Modified time: 2018-09-28 14:55:27
  */
 
 import React, {
@@ -30,6 +30,7 @@ import {
   StackActions
 } from 'react-navigation';
 import HTMLView from 'react-native-htmlview';
+import Fetch from '../../lib/Fetch'
 
 import {screenW, screenH, scaleSize,scaleHeight,setSpText} from '../../utils/ScreenUtils'
 
@@ -67,11 +68,21 @@ export default class extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      itemList: [{
-        title: '注册手机号一定要是银行的预留手机号码吗？',
-        context: '<p>注册的手机号可以不是银行预留手机号，但是在开通银行存管账户、绑定银行卡时，必须填写银行预留手机号。</p><p><span style="color:#E56600;">注意：</span>如果银行卡预留手机号码有变更，可以登录pc端，安全中心-开户“登录支付账户”，新浪支付-安全中心进行更改。</p>'
-      }]
+      itemList: []
     }
+  }
+
+  componentDidMount() {
+    const {itemId} = this.props.navigation.state.params;
+    console.log('itemId', itemId)
+    Fetch.POST("http://192.168.11.16:9007/app/helpDetails", {code: itemId}).then(res => {
+      console.log(res)
+      if(res.code === 1) {
+        this.setState({
+          itemList: res.data
+        })
+      }
+    })
   }
 
   _renderList = () => {
@@ -84,24 +95,26 @@ export default class extends Component {
   }
 
   render() {
-    return (<View style={styles.container}>
-      {this._renderList()}
-      {/* <WebView source={{html: '<h1>Hello world</h1>'}}/> */}
-      {/* <HTMLView value={'<h1>Hello world</h1>'} /> */}
-    </View>)
+    return (
+      <ScrollView>
+        <View style={styles.container}>
+          {this._renderList()}
+        </View>
+    </ScrollView>)
   }
 }
 
 function ListItem(props) {
-  const {title, context} = props.data;
-  console.log('context:',context)
+  const {title, content} = props.data;
+  console.log('content:',content)
+  
   return (
-    <View style={{paddingTop: scaleHeight(16)}}>
-      <View style={{borderLeftWidth: 3,borderColor: '#5B71F9',marginBottom: scaleHeight(16), paddingLeft: scaleSize(5)}}>
-        <Text style={{fontSize: setSpText(16), color: '#333'}}>{title}</Text>
+      <View style={{paddingTop: scaleHeight(16)}}>
+        <View style={{borderLeftWidth: 3,borderColor: '#5B71F9',marginBottom: scaleHeight(16), paddingLeft: scaleSize(5)}}>
+          <Text style={{fontSize: setSpText(16), color: '#333'}}>{title}</Text>
+        </View>
+        {content.indexOf('<') > -1 ? <HTMLView value={content} stylesheet={styles} addLineBreaks={false} /> : <Text style={{lineHeight: 25}}>{content}</Text>}
       </View>
-      <HTMLView value={context} stylesheet={styles} addLineBreaks={false} />
-    </View>
   )
 }
 
