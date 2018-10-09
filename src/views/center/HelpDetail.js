@@ -2,7 +2,7 @@
  * @Author: listing.zhaopeng 
  * @Date: 2018-09-27 14:42:21 
  * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2018-09-28 14:55:27
+ * @Last Modified time: 2018-10-09 16:00:34
  */
 
 import React, {
@@ -20,7 +20,9 @@ import {
   View,
   Linking,
   WebView,
-  Dimensions
+  Dimensions,
+  Animated,
+  Easing
 } from 'react-native';
 import {
   createStackNavigator,
@@ -32,8 +34,10 @@ import {
 import HTMLView from 'react-native-htmlview';
 import Fetch from '../../lib/Fetch'
 
-import {screenW, screenH, scaleSize,scaleHeight,setSpText} from '../../utils/ScreenUtils'
+import {screenW, screenH, scaleSize,scaleHeight, setSpText} from '../../utils/ScreenUtils'
 
+import Icon from 'react-native-vector-icons/SimpleLineIcons'
+const myIcon = (<Icon name="arrow-down" size={14} color="#B2B2B2" />)
 
 export default class extends Component {
   static navigationOptions = ({navigation}) => {
@@ -104,27 +108,84 @@ export default class extends Component {
   }
 }
 
-function ListItem(props) {
-  const {title, content} = props.data;
-  console.log('content:',content)
-  
-  return (
-      <View style={{paddingTop: scaleHeight(16)}}>
-        <View style={{borderLeftWidth: 3,borderColor: '#5B71F9',marginBottom: scaleHeight(16), paddingLeft: scaleSize(5)}}>
-          <Text style={{fontSize: setSpText(16), color: '#333'}}>{title}</Text>
+class ListItem extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      anim: new Animated.Value(0),
+      show: false
+    }
+  }
+
+  onShow = () => {
+    const isShow = this.state.show
+    console.log('onShow.')
+    const { anim } = this.state;
+    anim.stopAnimation(value => {
+        Animated.spring(anim, {
+            toValue: Math.round(value) + 1,
+            duration: 500
+        }).start();
+    });
+    this.setState({
+      show: !isShow
+    })
+  }
+
+  render () {
+    const {title, content} = this.props.data;
+    console.log('content:', content)
+    const rotateZ = this.state.anim.interpolate({
+      inputRange: [0, 2],
+      outputRange: ['0deg', '360deg']
+    });
+    let rato = {transform: [{rotate: rotateZ}]}
+    if(this.state.show) {
+      rato = {transform: [{rotate: rotateZ}]}
+    }
+    return (
+        <View style={{paddingTop: scaleHeight(16), borderBottomWidth: 1, borderColor: '#e8e8e8',}}>
+          <TouchableOpacity activeOpacity={1} onPress={() => {
+              this.onShow()
+          }}>
+            <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: scaleHeight(16), paddingRight: scaleSize(16)}}>
+                <Text style={{fontSize: setSpText(14), color: '#333'}}>{title}</Text>
+                <Animated.Text note style={[{marginLeft:scaleSize(15),color: this.props.textColor }, rato]}>{myIcon}</Animated.Text>
+            </View>
+          </TouchableOpacity>
+          <ItemContent
+          {...this.props}
+          isShow={this.state.show}
+          ></ItemContent>
         </View>
-        {content.indexOf('<') > -1 ? <HTMLView value={content} stylesheet={styles} addLineBreaks={false} /> : <Text style={{lineHeight: 25}}>{content}</Text>}
-      </View>
-  )
+    )
+  }
+}
+
+class ItemContent extends Component {
+  constructor(props) {
+    super(props)
+  }
+  render() {
+    const {title, content} = this.props.data;
+    console.log('ItemContent content:', content)
+    if(this.props.isShow) {
+      return (
+        <View style={{paddingRight: scaleSize(16), marginBottom: scaleHeight(15)}}>
+          {content.indexOf('<') > -1 ? <HTMLView value={content} stylesheet={styles} addLineBreaks={false} /> : <Text style={{lineHeight: 25, fontSize: setSpText(14)}}>{content}</Text>}
+        </View>
+      )
+    } else {
+      return null;
+    }
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#ffffff',
     paddingTop: 16,
-    paddingBottom: 14,
-    paddingLeft: 16,
-    paddingRight: 16,
+    paddingLeft: 16
   },
   p: {
     marginTop: 3,

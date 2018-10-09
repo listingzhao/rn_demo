@@ -24,15 +24,17 @@ import Fetch from '../../lib/Fetch'
 import {scaleSize,scaleHeight,setSpText} from '../../utils/ScreenUtils'
 import {baseUrl} from '../../api/baseUrl'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
-const myIcon = (<Icon name="arrow-right" size={24} color="#e8e8e8" />)
+const myIcon = (<Icon name="arrow-right" size={14} color="#B2B2B2" />)
 
 
 class Cell extends Component {
   render () {
     return (
-      <View style={styles.container}>
-        <Text style={{fontSize: setSpText(18)}}>{this.props.data.value}</Text>
-        <Text note style={{marginLeft:scaleSize(15),color: this.props.textColor}}>{myIcon}</Text> 
+      <View style={{backgroundColor: '#ffffff', paddingLeft: scaleSize(16),}}>
+        <View style={styles.container}>
+          <Text style={{fontSize: setSpText(16)}}>{this.props.data.value}</Text>
+          <Text note style={{marginLeft:scaleSize(15),color: this.props.textColor}}>{myIcon}</Text> 
+        </View>
       </View>
     )
   }
@@ -104,20 +106,26 @@ export default class extends Component {
 
   render() {
     return (
-      <ScrollView>
-        <View style={{flex: 1, backgroundColor: '#f5f5f5', paddingTop: scaleHeight(16)}}>
-          <View>
-            <Text style={{paddingLeft: 16, paddingBottom: 16, color: '#333333', fontSize: setSpText(16)}}>常见问题</Text>
+      <View style={{flex: 1,height: '100%'}}>
+        <ScrollView>
+          <View style={{flex: 1,height: '100%', backgroundColor: '#f5f5f5', paddingTop: scaleHeight(16)}}>
+            <View>
+              <Text style={{paddingLeft: 16, paddingBottom: 16, color: '#333333', fontSize: setSpText(14)}}>常见问题</Text>
+            </View>
+            {this._renderList()}
           </View>
-          {this._renderList()}
-          <View style={{marginTop: 40,alignItems: 'center', marginBottom: 40}}>
+        </ScrollView>
+        <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', paddingTop: scaleHeight(11), paddingBottom: scaleHeight(11), alignItems: 'center', position: "absolute",left:0, right:0, bottom: 0, backgroundColor: '#fff'}}>
             <TouchableOpacity activeOpacity={0.5} onPress={() => this.linking('tel:4008-690-611') }>
-              <Text style={{fontSize: setSpText(18),fontWeight: 'bold'}}>4008-690-611</Text>
+              <View style={{flex: 1, flexDirection: 'row',justifyContent: 'center', alignItems: 'center'}}>
+                <Text note style={{marginRight:scaleSize(5)}}><Icon name="phone" size={16} color="#5B71F9" /></Text>
+                <Text style={{fontSize: setSpText(16),fontWeight: 'bold', color: '#5B71F9'}}>联系客服</Text>
+              </View>
             </TouchableOpacity>
-            <Text>工作时间：09：00-18：00</Text>
-          </View>
+            <Text style={{color: '#5B71F9'}}> 09:00-18:00</Text>
         </View>
-      </ScrollView>
+      </View>
+      
     )
   }
 } 
@@ -127,12 +135,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
     paddingTop: 14,
     paddingBottom: 14,
     borderBottomWidth: 1,
     borderColor: '#e8e8e8',
-    paddingLeft: 16,
     paddingRight: 16,
     
   },
