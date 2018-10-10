@@ -43,6 +43,10 @@ class Cell extends Component {
 export default class extends Component {
   static navigationOptions = ({ navigation }) => {
     return {
+      headerStyle: {
+        elevation: 0,
+        // backgroundColor: '#5B71F9'
+      },
       headerTitle: (
         <Text style={{ flex: 1, alignSelf: 'center', textAlign: 'center',fontWeight: 'bold', fontSize: 18 }}>帮助中心</Text>
       ),
@@ -73,7 +77,7 @@ export default class extends Component {
   }
 
   componentDidMount() {
-    console.log(baseUrl)
+    console.log(baseUrl+"/app/help")
     Fetch.POST(baseUrl+"/app/help").then(res => {
       console.log(res)
       if(res.code === 1) {

@@ -145,7 +145,7 @@ class HomeScreen extends Component {
   }
 
   getData() {
-    DeviceEventEmitter.addListener('nativeCallRn',(msg)=>{
+    DeviceEventEmitter.addListener('nativeCallRn',(msg) => {
       title = "RN界面,收到数据：" + msg;
       ToastAndroid.show("发送成功", ToastAndroid.SHORT);
     })
