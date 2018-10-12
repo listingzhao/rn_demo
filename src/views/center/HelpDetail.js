@@ -1,8 +1,8 @@
 /*
  * @Author: listing.zhaopeng 
  * @Date: 2018-09-27 14:42:21 
- * @Last Modified by: mikey.zhaopeng
- * @Last Modified time: 2018-10-10 10:17:56
+ * @Last Modified by: listing.zhao
+ * @Last Modified time: 2018-10-12 17:40:06
  */
 
 import React, {
@@ -32,7 +32,9 @@ import {
   StackActions
 } from 'react-navigation';
 import HTMLView from 'react-native-htmlview';
+import {Loading} from '../../components/Loading'
 import Fetch from '../../lib/Fetch'
+import {baseUrl} from '../../api/baseUrl'
 
 import {screenW, screenH, scaleSize,scaleHeight, setSpText} from '../../utils/ScreenUtils'
 
@@ -79,9 +81,11 @@ export default class extends Component {
   componentDidMount() {
     const {itemId} = this.props.navigation.state.params;
     console.log('itemId', itemId)
-    Fetch.POST("http://192.168.11.16:9007/app/helpDetails", {code: itemId}).then(res => {
+    Loading.show();
+    Fetch.POST(baseUrl+"/app/helpDetails", {code: itemId}).then(res => {
       console.log(res)
       if(res.code === 1) {
+        Loading.hidden()
         this.setState({
           itemList: res.data
         })

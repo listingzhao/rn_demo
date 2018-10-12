@@ -16,8 +16,10 @@
     "react-native": "0.57.0",
     "react-native-htmlview": "^0.13.0",
     "react-native-linear-gradient": "^2.4.2",
+    "react-native-root-siblings": "^3.1.4",
     "react-native-vector-icons": "^5.0.0",
-    "react-navigation": "^2.14.0"
+    "react-navigation": "^2.14.0",
+    "redux": "^4.0.0"
   },
   "devDependencies": {
     "babel-jest": "23.6.0",

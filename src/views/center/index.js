@@ -21,6 +21,7 @@ import {
   StackActions
 } from 'react-navigation';
 import Fetch from '../../lib/Fetch'
+import {Loading} from '../../components/Loading'
 import {scaleSize,scaleHeight,setSpText} from '../../utils/ScreenUtils'
 import {baseUrl} from '../../api/baseUrl'
 import Icon from 'react-native-vector-icons/SimpleLineIcons'
@@ -78,9 +79,11 @@ export default class extends Component {
 
   componentDidMount() {
     console.log(baseUrl+"/app/help")
+    Loading.show()
     Fetch.POST(baseUrl+"/app/help").then(res => {
       console.log(res)
       if(res.code === 1) {
+        Loading.hidden()
         this.setState({
           dataList: res.data
         })
