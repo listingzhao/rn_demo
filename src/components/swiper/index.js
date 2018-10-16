@@ -9,8 +9,17 @@ import {
   TouchableOpacity,
   ViewPagerAndroid,
   Platform,
+  StyleSheet,
   ActivityIndicator
 } from 'react-native'
+
+const Button = ({text, style, onPress}) => {
+  return (
+    <TouchableOpacity style={style} onPress={onPress}>
+      <Text>{text}</Text>
+    </TouchableOpacity>
+  )
+}
 
 export default class extends Component {
 
@@ -33,6 +42,25 @@ export default class extends Component {
     }
   }
 
+  getSafeIndex = (index) => {
+    const max = this.props.children.length - 1;
+    const min = 0;
+
+    return Math.min(max, Math.max(index, min))
+  }
+
+  handlePress = (index) => {
+    const safeIndex = this.getSafeIndex(index);
+    console.log('safeIndex', safeIndex)
+    this.props.onChange(safeIndex)
+  }
+
+  handleLayout = ({nativeEvent}) => {
+    this.setState({
+      layoutWidth: nativeEvent.layout.width
+    })
+  }
+
   render() {
     const {children, style, index} = this.props;
     const translateX = - index * this.state.layoutWidth;
@@ -44,14 +72,21 @@ export default class extends Component {
           ...item.props.style,
           {
             width: this.state.layoutWidth,
-            transform: [{translateX,}],
+            transform: [{translateX}],
           }
         ]
       }
     ))
     return (
-      <View style={styles.container}>
-        
+      <View style={{flex:1, alignItems: 'center'}}>
+        <View style={[styles.container, style]}
+          onLayout={this.handleLayout}>
+          {items}
+        </View>
+        <View style={{flexDirection: 'row',}}>
+          <Button style={[styles.button,{left: 0}]} text={'上一个'} onPress={() => this.handlePress(index - 1)} />
+          <Button style={[styles.button,{left: 60}]} text={'下一个'} onPress={() => this.handlePress(index + 1)} />
+        </View>
       </View>
     )
   }
@@ -64,7 +99,7 @@ const styles = StyleSheet.create({
   },
   button: {
       position: 'absolute',
-      top: 120,
+      top: 20,
       width: 50,
       height: 20,
       borderWidth: 1,

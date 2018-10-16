@@ -20,16 +20,78 @@ import {
   StackActions
 } from 'react-navigation';
 
+import SimpleSwiper from '../../../components/swiper'
+
+const styles = StyleSheet.create({
+  swiper: {
+    alignSelf:'center',
+    marginVertical: 100,
+    borderWidth: 2,
+    borderColor: 'red',
+    overflow:'visible',
+    width: 100,
+  },
+  item: {
+    width: 100,
+    height: 100,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  one: {
+    backgroundColor: '#0ca',
+  },
+  two: {
+    backgroundColor: '#0cc',
+  },
+  three: {
+    backgroundColor: '#0ac',
+  },
+})
+
 class Tab1 extends Component {
   static navigationOptions = ({navigation}) => {
     return {
       tabBarLabel: '推荐'
     }
   }
+  
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      index: 1
+    }
+  }
+
+  handleChange = (index) => {
+    console.log('handleChange:',index)
+            this.setState({
+              index: index
+            })
+  }
+
   render() {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#ffffff'}}>
+      <View style={{flex:1, backgroundColor: '#ffffff'}}>
         <Text>推荐!</Text>
+        <TouchableOpacity style={[styles.button,{left: 60}]} activeOpacity={0.5} onPress={() => {console.log('onPress')}}>
+            <Text>下一个</Text>
+          </TouchableOpacity>
+        <View>
+        <SimpleSwiper style={styles.swiper}
+          index={this.state.index}
+          onChange={this.handleChange}>
+          <View style={[styles.item,styles.one]}>
+              <Text>one</Text>
+          </View>
+          <View style={[styles.item,styles.two]}>
+              <Text>two</Text>
+          </View>
+          <View style={[styles.item,styles.three]}>
+              <Text>three</Text>
+          </View>
+        </SimpleSwiper>
+        </View>
       </View>
     );
   }
