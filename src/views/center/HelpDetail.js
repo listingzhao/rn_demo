@@ -2,7 +2,7 @@
  * @Author: listing.zhaopeng 
  * @Date: 2018-09-27 14:42:21 
  * @Last Modified by: listing.zhao
- * @Last Modified time: 2018-10-12 17:40:06
+ * @Last Modified time: 2018-10-22 16:11:05
  */
 
 import React, {
@@ -47,7 +47,15 @@ export default class extends Component {
     return {
       headerStyle: {
         elevation: 0,
-        // backgroundColor: '#5B71F9'
+        ...Platform.select({
+          ios: {
+            height: 44,
+          },
+          android: {
+            paddingTop: scaleHeight(20),
+            height: scaleHeight(70),
+          },
+        })
       },
       headerTitle: (
         <Text style={{ flex: 1, alignSelf: 'center', textAlign: 'center',fontWeight: 'bold', fontSize: setSpText(18) }}>{params.title}</Text>

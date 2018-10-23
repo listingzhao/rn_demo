@@ -46,7 +46,15 @@ export default class extends Component {
     return {
       headerStyle: {
         elevation: 0,
-        // backgroundColor: '#5B71F9'
+        ...Platform.select({
+          ios: {
+            height: 44,
+          },
+          android: {
+            paddingTop: scaleHeight(20),
+            height: scaleHeight(70),
+          },
+        })
       },
       headerTitle: (
         <Text style={{ flex: 1, alignSelf: 'center', textAlign: 'center',fontWeight: 'bold', fontSize: 18 }}>帮助中心</Text>
@@ -106,7 +114,7 @@ export default class extends Component {
       if(!supported) {
         console.log('Can\'t handle url: ' + url);
       } else {
-        return Linking.openURL(url);
+        return Linking.openURL(url).then(res => console.log(res)).catch(err => console.log('err', err));
       }
     }).catch(err => console.error('An error occurred', err));
   }
